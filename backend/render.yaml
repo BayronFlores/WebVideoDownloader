@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: youtube-mp3-api
+    runtime: python
+    buildCommand: ''
+    startCommand: python backend.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+    plan: free
