@@ -10,6 +10,10 @@ from uuid import uuid4
 app = Flask(__name__)
 CORS(app)
 
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"mensaje": "El backend está funcionando correctamente."}), 200
+
 # Configuración para producción
 if __name__ != "__main__":
     import logging
