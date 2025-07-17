@@ -79,6 +79,7 @@ def info_video():
                 "thumbnail": info.get("thumbnail")
             })
     except Exception as e:
+        print("🔴 ERROR /api/info:", str(e))
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/descargar", methods=["POST"])

@@ -2,12 +2,28 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 type VideoInfo = {
   title: string;
   thumbnail: string;
+};
+
+const limpiarUrlYoutube = (url: string): string => {
+  try {
+    const urlObj = new URL(url);
+    if (
+      urlObj.hostname.includes('youtube.com') &&
+      urlObj.pathname === '/watch' &&
+      urlObj.searchParams.has('v')
+    ) {
+      const videoId = urlObj.searchParams.get('v');
+      return `https://www.youtube.com/watch?v=${videoId}`;
+    }
+    return url; // No se altera si no cumple condiciones
+  } catch {
+    return url; // Si es inválida, se retorna igual
+  }
 };
 
 export const useDownloader = () => {
@@ -25,11 +41,13 @@ export const useDownloader = () => {
     setDownloadUrl(null);
     if (!url) return;
 
+    const urlLimpia = limpiarUrlYoutube(url);
+
     setIsSearching(true);
     setEstado('🔎 Buscando información...');
     try {
       const response = await axios.post<VideoInfo>(`${API_BASE_URL}/api/info`, {
-        url,
+        url: urlLimpia,
       });
       setInfo(response.data);
       setEstado('');
@@ -46,10 +64,12 @@ export const useDownloader = () => {
     setEstado('⏳ Descargando...');
     setDownloadUrl(null);
 
+    const urlLimpia = limpiarUrlYoutube(url);
+
     try {
       const response = await axios.post(
         `${API_BASE_URL}/api/descargar`,
-        { url },
+        { url: urlLimpia },
         { responseType: 'blob' },
       );
 
