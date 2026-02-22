@@ -2,9 +2,9 @@ services:
   - type: web
     name: youtube-mp3-api
     runtime: python
-    # FFmpeg es OBLIGATORIO para que yt-dlp pueda convertir a MP3
+    packages:
+      - ffmpeg
     buildCommand: |
-      apt-get update && apt-get install -y ffmpeg &&
       pip install -r requirements.txt &&
       pip install --upgrade yt-dlp
     startCommand: gunicorn app:app --workers 2 --timeout 180 --bind 0.0.0.0:$PORT
@@ -14,10 +14,9 @@ services:
       - key: FLASK_ENV
         value: production
       - key: SECRET_KEY
-        generateValue: true # Render genera una clave aleatoria segura
+        generateValue: true
       - key: FRONTEND_URL
-        value: https://TU-FRONTEND.vercel.app # ← cambia esto por tu URL real
-      # Las siguientes las debes completar con los datos de tu DB de Render
+        value: https://TU-FRONTEND.vercel.app
       - key: DB_USER
         sync: false
       - key: DB_PASSWORD
@@ -28,8 +27,5 @@ services:
         value: '5432'
       - key: DB_NAME
         sync: false
-      # Opcional pero muy recomendado: proxy para evitar bloqueos de YouTube
-      # - key: YTDLP_PROXY
-      #   value: http://user:pass@host:port
     plan: free
     healthCheckPath: /
