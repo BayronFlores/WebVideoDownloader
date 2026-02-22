@@ -84,6 +84,7 @@ def get_ydl_base_opts():
         "extractor_args": {
             "youtube": {
                 "player_client": ["web", "ios", "android"],
+                "po_token": ["web+auto"],
             }
         },
         "http_headers": {
